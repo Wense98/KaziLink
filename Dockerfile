@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libpq-dev \
-    libatomic1
+    libatomic1 \
+    ca-certificates
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
@@ -28,7 +29,9 @@ WORKDIR /var/www
 # Copy existing application directory contents
 COPY . .
 
-# Install dependencies
+# Install dependencies (ignoring DB connection during discovery)
+ENV DB_CONNECTION=sqlite
+ENV DB_DATABASE=:memory:
 RUN composer install --no-dev --optimize-autoloader
 RUN npm install
 RUN npm run build
