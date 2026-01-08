@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ['php82', 'php82Packages.composer', 'nodejs_18', 'libatomic']
+nixPkgs = ['php82', 'php82Packages.composer', 'nodejs_20', 'libatomic']
 
 [phases.install]
 cmds = ['composer install --no-dev --optimize-autoloader', 'npm install']
