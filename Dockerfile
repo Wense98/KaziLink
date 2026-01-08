@@ -14,9 +14,12 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && update-ca-certificates
 
-# Configure PHP for SSL
-RUN echo "openssl.cafile=/etc/ssl/certs/ca-certificates.crt" >> /usr/local/etc/php/conf.d/docker-php-openssl.ini && \
-    echo "openssl.capath=/etc/ssl/certs/" >> /usr/local/etc/php/conf.d/docker-php-openssl.ini
+# Configure PHP for SSL and Uploads
+RUN echo "openssl.cafile=/etc/ssl/certs/ca-certificates.crt" >> /usr/local/etc/php/conf.d/docker-php-config.ini && \
+    echo "openssl.capath=/etc/ssl/certs/" >> /usr/local/etc/php/conf.d/docker-php-config.ini && \
+    echo "upload_max_filesize=100M" >> /usr/local/etc/php/conf.d/docker-php-config.ini && \
+    echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/docker-php-config.ini && \
+    echo "memory_limit=256M" >> /usr/local/etc/php/conf.d/docker-php-config.ini
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
