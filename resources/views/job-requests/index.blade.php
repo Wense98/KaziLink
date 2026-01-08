@@ -3,107 +3,110 @@
         {{ __('Job Requests') }}
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="glass-card rounded-[2.5rem] p-10" data-aos="fade-up">
-                <div class="flex items-center justify-between mb-12">
-                    <div>
-                        <h3 class="text-xs font-black uppercase tracking-[0.3em] text-brand-500 mb-2">Service Pipeline</h3>
-                        <h2 class="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Active Opportunities</h2>
+    <div class="py-12 bg-slate-50 min-h-screen">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <!-- Header Section -->
+            <div class="flex items-center justify-between bg-blue-600 rounded-3xl p-6 text-white shadow-xl shadow-blue-600/20">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-white/20 rounded-2xl">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                     </div>
-                    <div class="flex space-x-2">
-                        <span class="px-4 py-2 bg-brand-500/10 text-brand-500 rounded-xl text-[10px] font-bold uppercase tracking-widest border border-brand-500/20">Total: {{ $requests->count() }}</span>
+                    <h2 class="text-xl font-bold uppercase tracking-tight">Work Request</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    </button>
+                    <button class="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                    </button>
+                </div>
+            </div>
+
+            @forelse($requests as $request)
+                <!-- Detailed Request Card -->
+                <div class="card-ui bg-white mb-8">
+                    <!-- Request Summary -->
+                    <div class="p-8 border-b border-slate-100">
+                        <div class="grid grid-cols-2 gap-y-6">
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Job Title:</p>
+                                <p class="text-sm font-bold text-slate-800">
+                                    {{ Auth::user()->role === 'worker' ? 'New Service Request' : 'Request to ' . $request->worker->name }}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Location:</p>
+                                <p class="text-sm font-bold text-slate-800">{{ $request->location ?? 'Arusha' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Budget:</p>
+                                <p class="text-sm font-bold text-slate-800">TZS {{ number_format($request->budget) }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Date:</p>
+                                <p class="text-sm font-bold text-slate-800">{{ $request->created_at->format('M d, Y') }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-100 pb-2">Job Details</p>
+                            <p class="text-sm text-slate-600 leading-relaxed italic">
+                                "{{ $request->details }}"
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Client/Status Info -->
+                    <div class="p-8 bg-slate-50/50">
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
+                                    <div class="w-full h-full flex items-center justify-center text-slate-500 font-bold">
+                                        {{ substr(Auth::user()->role === 'worker' ? $request->client->name : $request->worker->name, 0, 1) }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-900">{{ Auth::user()->role === 'worker' ? $request->client->name : $request->worker->name }}</h4>
+                                    <p class="text-[10px] text-slate-500 font-medium uppercase tracking-widest mt-0.5">Contact: +255 739 123 455</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3 w-full md:w-auto">
+                                @if(Auth::user()->role === 'worker' && $request->status === 'pending')
+                                    <form action="{{ route('job-requests.update', $request) }}" method="POST" class="flex-grow md:flex-none">
+                                        @csrf @method('PATCH')
+                                        <input type="hidden" name="status" value="accepted">
+                                        <button type="submit" class="w-full btn-success !py-2.5 !px-6 text-[10px] uppercase tracking-widest ring-offset-2 hover:ring-2 ring-emerald-500/20">
+                                            Accept Job
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('job-requests.update', $request) }}" method="POST" class="flex-grow md:flex-none">
+                                        @csrf @method('PATCH')
+                                        <input type="hidden" name="status" value="rejected">
+                                        <button type="submit" class="w-full btn-danger !py-2.5 !px-6 text-[10px] uppercase tracking-widest ring-offset-2 hover:ring-2 ring-rose-500/20">
+                                            Decline
+                                        </button>
+                                    </form>
+                                @else
+                                    <div class="px-6 py-2.5 bg-slate-200 text-slate-600 rounded-xl text-[10px] font-bold uppercase tracking-widest">
+                                        Status: {{ $request->status }}
+                                    </div>
+                                @endif
+                                
+                                <a href="{{ route('messages.show', Auth::user()->role === 'worker' ? $request->client_id : $request->worker_id) }}" 
+                                   class="p-3 bg-white border border-slate-200 text-slate-500 rounded-xl hover:text-blue-600 transition-all shadow-sm">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                @if($requests->isEmpty())
-                    <div class="py-20 text-center">
-                        <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 mx-auto mb-6">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">No requests found at this time.</p>
-                    </div>
-                @else
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead>
-                                <tr class="text-left border-b border-white/5">
-                                    <th class="pb-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Context</th>
-                                    <th class="pb-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Details</th>
-                                    <th class="pb-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Budget</th>
-                                    <th class="pb-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Status</th>
-                                    <th class="pb-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-white/5">
-                                @foreach($requests as $request)
-                                    <tr class="group hover:bg-white/5 transition-all">
-                                        <td class="py-8">
-                                            <div class="flex items-center">
-                                                <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-900 font-bold border border-white/10">
-                                                    {{ substr(Auth::user()->role === 'worker' ? $request->client->name : $request->worker->name, 0, 1) }}
-                                                </div>
-                                                <div class="ml-4">
-                                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">
-                                                        {{ Auth::user()->role === 'worker' ? $request->client->name : $request->worker->name }}
-                                                    </h4>
-                                                    <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">
-                                                        {{ $request->created_at->diffForHumans() }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="py-8">
-                                            <p class="text-xs text-slate-600 dark:text-slate-400 font-medium line-clamp-2 max-w-xs transition-all group-hover:line-clamp-none">
-                                                {{ $request->details }}
-                                            </p>
-                                        </td>
-                                        <td class="py-8">
-                                            <span class="text-xs font-black text-slate-900 dark:text-white">
-                                                {{ $request->budget ? number_format($request->budget) . ' TZS' : 'N/A' }}
-                                            </span>
-                                        </td>
-                                        <td class="py-8">
-                                            @php
-                                                $statusColors = [
-                                                    'pending' => 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-                                                    'accepted' => 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-                                                    'rejected' => 'bg-rose-500/10 text-rose-500 border-rose-500/20',
-                                                    'completed' => 'bg-brand-500/10 text-brand-500 border-brand-500/20',
-                                                    'cancelled' => 'bg-slate-500/10 text-slate-500 border-slate-500/20',
-                                                ];
-                                            @endphp
-                                            <span class="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.1em] border {{ $statusColors[$request->status] ?? 'bg-slate-500/10 text-slate-500' }}">
-                                                {{ $request->status }}
-                                            </span>
-                                        </td>
-                                        <td class="py-8">
-                                            <div class="flex space-x-2">
-                                                @if(Auth::user()->role === 'worker' && $request->status === 'pending')
-                                                    <form action="{{ route('job-requests.update', $request) }}" method="POST">
-                                                        @csrf @method('PATCH')
-                                                        <input type="hidden" name="status" value="accepted">
-                                                        <button type="submit" class="px-3 py-2 bg-emerald-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg hover:shadow-emerald-500/20">Accept</button>
-                                                    </form>
-                                                    <form action="{{ route('job-requests.update', $request) }}" method="POST">
-                                                        @csrf @method('PATCH')
-                                                        <input type="hidden" name="status" value="rejected">
-                                                        <button type="submit" class="px-3 py-2 bg-white/5 text-slate-900 dark:text-white border border-white/10 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Decline</button>
-                                                    </form>
-                                                @endif
-                                                
-                                                <a href="{{ route('messages.show', Auth::user()->role === 'worker' ? $request->client_id : $request->worker_id) }}" class="p-2 transition-all text-slate-400 hover:text-brand-500">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
-            </div>
+            @empty
+                <div class="card-ui p-20 text-center">
+                    <p class="text-slate-400 font-bold uppercase tracking-widest">No Active Work Requests</p>
+                </div>
+            @endforelse
         </div>
     </div>
 </x-app-layout>
