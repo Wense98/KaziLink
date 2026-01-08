@@ -29,9 +29,7 @@ WORKDIR /var/www
 # Copy existing application directory contents
 COPY . .
 
-# Install dependencies (ignoring DB connection during discovery)
-ENV DB_CONNECTION=sqlite
-ENV DB_DATABASE=:memory:
+# Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 RUN npm install
 RUN npm run build
