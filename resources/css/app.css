@@ -92,4 +92,22 @@
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
+
+    /* Auth Redesign Styles */
+    .auth-card {
+        @apply bg-white rounded-[2.5rem] shadow-2xl p-8 max-w-md w-full mx-auto border border-slate-100;
+        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), #fff);
+    }
+
+    .otp-input {
+        @apply w-12 h-14 bg-slate-50 border border-slate-200 rounded-xl text-center font-bold text-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all;
+    }
+
+    .checklist-item {
+        @apply flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest;
+    }
+
+    .checklist-icon {
+        @apply w-4 h-4 text-emerald-500;
+    }
 }
