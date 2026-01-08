@@ -34,7 +34,8 @@ RUN npm install
 RUN npm run build
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/storage /var/www/cache
+RUN chmod +x docker-start.sh
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 EXPOSE 8080
 
