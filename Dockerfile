@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libpq-dev \
     libatomic1 \
-    ca-certificates
+    ca-certificates \
+    && update-ca-certificates
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
@@ -29,8 +30,8 @@ WORKDIR /var/www
 # Copy existing application directory contents
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install dependencies (We use sqlite:memory during build to avoid connecting to Aiven)
+RUN DB_CONNECTION=sqlite DB_DATABASE=:memory: composer install --no-dev --optimize-autoloader
 RUN npm install
 RUN npm run build
 
