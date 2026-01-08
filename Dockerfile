@@ -14,6 +14,10 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && update-ca-certificates
 
+# Configure PHP for SSL
+RUN echo "openssl.cafile=/etc/ssl/certs/ca-certificates.crt" >> /usr/local/etc/php/conf.d/docker-php-openssl.ini && \
+    echo "openssl.capath=/etc/ssl/certs/" >> /usr/local/etc/php/conf.d/docker-php-openssl.ini
+
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
 
@@ -30,10 +34,18 @@ WORKDIR /var/www
 # Copy existing application directory contents
 COPY . .
 
-# Install dependencies (We use sqlite:memory during build to avoid connecting to Aiven)
-RUN DB_CONNECTION=sqlite DB_DATABASE=:memory: composer install --no-dev --optimize-autoloader
+# Build-time environment variables to prevent DB connection
+ENV DB_CONNECTION=sqlite
+ENV DB_DATABASE=:memory:
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 RUN npm install
 RUN npm run build
+
+# Run scripts after building assets, still isolated from real DB
+RUN php artisan package:discover --ansi
 
 # Set permissions
 RUN chmod +x docker-start.sh
