@@ -29,7 +29,7 @@
         background-color: white;
         border: 1px solid #e2e8f0;
         border-radius: 1.5rem;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
         overflow: hidden;
     }
 
@@ -116,7 +116,7 @@
     }
 
     .auth-card-refined {
-        @apply bg-white rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0, 0, 0, 0.1)] p-10 max-w-lg w-full mx-auto border border-slate-100 overflow-hidden relative;
+        @apply bg-white rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] p-10 max-w-lg w-full mx-auto border border-slate-100 overflow-hidden relative;
     }
 
     .input-group-auth {
