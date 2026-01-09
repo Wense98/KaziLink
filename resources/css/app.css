@@ -93,21 +93,41 @@
         letter-spacing: 0.05em;
     }
 
-    /* Auth Redesign Styles */
-    .auth-card {
-        @apply bg-white rounded-[2.5rem] shadow-2xl p-8 max-w-md w-full mx-auto border border-slate-100;
-        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), #fff);
+    /* Refined Auth Styles */
+    .auth-bg {
+        background-color: #f1f5f9;
+        background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
     }
 
-    .otp-input {
-        @apply w-12 h-14 bg-slate-50 border border-slate-200 rounded-xl text-center font-bold text-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all;
+    .city-silhouette {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 120px;
+        background: linear-gradient(transparent, rgba(37, 99, 235, 0.03));
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 100' preserveAspectRatio='none'%3E%3Cpath d='M0,100 L0,80 L50,40 L100,80 L150,20 L200,80 L250,50 L300,90 L350,30 L400,70 L450,10 L500,80 L550,40 L600,70 L650,30 L700,80 L750,50 L800,90 L850,40 L900,10 L950,20 L1000,80 L1000,100 Z' /%3E%3C/svg%3E");
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/xml' viewBox='0 0 1000 100' preserveAspectRatio='none'%3E%3Cpath d='M0,100 L0,80 L50,40 L100,80 L150,20 L200,80 L250,50 L300,90 L350,30 L400,70 L450,10 L500,80 L550,40 L600,70 L650,30 L700,80 L750,50 L800,90 L850,40 L900,10 L950,20 L1000,80 L1000,100 Z' /%3E%3C/svg%3E");
+        mask-size: 100% 100%;
+        -webkit-mask-size: 100% 100%;
+        background-color: #1e3a8a;
+        opacity: 0.1;
     }
 
-    .checklist-item {
-        @apply flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest;
+    .auth-card-refined {
+        @apply bg-white rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0, 0, 0, 0.1)] p-10 max-w-lg w-full mx-auto border border-slate-100 overflow-hidden relative;
     }
 
-    .checklist-icon {
-        @apply w-4 h-4 text-emerald-500;
+    .input-group-auth {
+        @apply flex items-center bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:border-blue-500 focus-within:bg-white transition-all;
+    }
+
+    .otp-box {
+        @apply w-14 h-16 bg-slate-50 border border-slate-200 rounded-2xl text-center font-bold text-xl text-slate-800 transition-all focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none;
+    }
+
+    .secure-badge {
+        @apply w-16 h-16 bg-white border border-slate-100 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/5 text-blue-600;
     }
 }
