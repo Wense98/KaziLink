@@ -80,6 +80,14 @@
                         </div>
 
                         <div>
+                            <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+                            <input id="email" name="email" type="email" required
+                                class="form-input-premium"
+                                placeholder="name@example.com">
+                            <x-input-error :messages="$errors->get('email')" class="mt-2 text-xs font-bold text-red-500" />
+                        </div>
+
+                        <div>
                             <label for="phone" class="block text-sm font-semibold text-slate-700 mb-2">Phone Number</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
