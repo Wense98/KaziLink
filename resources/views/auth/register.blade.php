@@ -76,6 +76,7 @@
                             <input id="name" name="name" type="text" required
                                 class="form-input-premium"
                                 placeholder="John Doe">
+                            <x-input-error :messages="$errors->get('name')" class="mt-2 text-xs font-bold text-red-500" />
                         </div>
 
                         <div>
@@ -88,6 +89,7 @@
                                     class="form-input-premium !pl-16"
                                     placeholder="712 345 678">
                             </div>
+                            <x-input-error :messages="$errors->get('phone')" class="mt-2 text-xs font-bold text-red-500" />
                         </div>
 
                         <!-- Location Grid -->
@@ -105,20 +107,16 @@
                                         <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
                                 </div>
+                                <x-input-error :messages="$errors->get('region')" class="mt-2 text-xs font-bold text-red-500" />
                             </div>
                             <div>
                                 <label for="district" class="block text-sm font-semibold text-slate-700 mb-2">District</label>
                                 <div class="relative">
-                                    <select id="district" name="district" class="form-input-premium appearance-none">
-                                        <option value="">Select District</option>
-                                        <option value="Kinondoni">Kinondoni</option>
-                                        <option value="Ilala">Ilala</option>
-                                        <option value="Temeke">Temeke</option>
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-                                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                    </div>
+                                    <input id="district" name="district" type="text" required
+                                           class="form-input-premium"
+                                           placeholder="e.g. Kinondoni">
                                 </div>
+                                <x-input-error :messages="$errors->get('district')" class="mt-2 text-xs font-bold text-red-500" />
                             </div>
                         </div>
 
@@ -127,6 +125,7 @@
                             <input id="password" name="password" type="password" required
                                 class="form-input-premium"
                                 placeholder="Min. 8 characters">
+                            <x-input-error :messages="$errors->get('password')" class="mt-2 text-xs font-bold text-red-500" />
                         </div>
                     </div>
 
@@ -147,6 +146,22 @@
                         Already have an account? <a href="{{ route('login') }}" class="font-bold text-brand-600 hover:text-brand-500">Sign in</a>
                     </p>
                 </form>
+                
+                <div class="mt-4">
+                     @if ($errors->any())
+                        <div class="mb-4">
+                            <div class="font-medium text-red-600">
+                                {{ __('Whoops! Something went wrong.') }}
+                            </div>
+
+                            <ul class="mt-3 list-disc list-inside text-sm text-red-600">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

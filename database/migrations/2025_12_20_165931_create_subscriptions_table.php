@@ -16,7 +16,6 @@ return new class extends Migration
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->decimal('amount', 10, 2)->default(0);
-            $table->string('payment_method')->nullable(); // M-Pesa, Tigo Pesa, etc.
             $table->timestamps();
         });
     }

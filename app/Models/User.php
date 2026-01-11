@@ -26,7 +26,11 @@ class User extends Authenticatable
         'region',
         'district',
         'avatar',
+        'district',
+        'avatar',
         'is_active',
+        'otp_code',
+        'phone_verified_at',
     ];
 
     /**
@@ -49,7 +53,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'password' => 'hashed',
             'is_active' => 'boolean',
+            'phone_verified_at' => 'datetime',
         ];
     }
 
@@ -106,5 +112,16 @@ class User extends Authenticatable
     public function receivedJobRequests(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(JobRequest::class, 'worker_id');
+    }
+
+    /**
+     * Check if the user has an active subscription.
+     */
+    public function hasActiveSubscription(): bool
+    {
+        return $this->subscriptions()
+                    ->where('status', 'active')
+                    ->where('ends_at', '>', now())
+                    ->exists();
     }
 }

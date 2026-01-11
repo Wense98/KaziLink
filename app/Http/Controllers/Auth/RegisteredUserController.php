@@ -31,22 +31,34 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20', 'unique:'.User::class],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['required', 'string', 'max:20', 'unique:'.User::class],
+            'region' => ['nullable', 'string', 'max:255'],
+            'district' => ['nullable', 'string', 'max:255'],
+            'role' => ['required', 'string', 'in:customer,worker'],
             'password' => ['required', Rules\Password::defaults()],
         ]);
+
+        $otp = rand(1000, 9999);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
+            'region' => $request->region,
+            'district' => $request->district,
+            'role' => $request->role,
             'password' => Hash::make($request->password),
+            'otp_code' => $otp,
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
+        
+        // Flash OTP for simulation purposes
+        session()->flash('success', "Welcome! Your OTP is: $otp (Simulation)");
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('verification.notice'));
     }
 }

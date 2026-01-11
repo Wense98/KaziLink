@@ -37,28 +37,27 @@ class WorkerSearchController extends Controller
             $query->where('location_id', $request->location);
         }
 
-        // For demo purposes, if no verified workers, we might want to show all
-        // $workers = $query->paginate(12);
-        
-        // Let's remove is_verified check for now to ensure we see our seeded/test data easily
+        // Enforce STRICT visibility rules: Verified AND Active Subscription
         $workers = WorkerProfile::with(['user', 'category', 'location'])
-            ->whereHas('user.subscriptions', function ($query) {
-                $query->where('status', 'active')
-                      ->where('ends_at', '>', now());
-            })
+            ->verifiedAndActive()
             ->when($request->filled('category'), function ($q) use ($request) {
                 return $q->where('service_category_id', $request->category);
             })
             ->when($request->filled('location'), function ($q) use ($request) {
                 return $q->where('location_id', $request->location);
             })
-            ->when($request->filled('price_range'), function ($q) use ($request) {
-                if ($request->price_range === 'budget') {
-                    return $q->where('hourly_rate', '<', 10000);
-                } elseif ($request->price_range === 'premium') {
-                    return $q->where('hourly_rate', '>=', 10000);
-                }
+            ->when(Auth::check() && Auth::user()->district, function ($q) {
+                // Smart Location Matching: Boost workers in same district/region
+                $userDistrict = Auth::user()->district;
+                $userRegion = Auth::user()->region;
+                
+                $q->orderByRaw("CASE 
+                    WHEN worker_profiles.district = ? THEN 0 
+                    WHEN worker_profiles.id IN (SELECT id FROM users WHERE region = ?) THEN 1
+                    ELSE 2 
+                END", [$userDistrict, $userRegion]);
             })
+            ->orderBy('created_at', 'desc')
             ->paginate(12);
 
         $categories = ServiceCategory::all();

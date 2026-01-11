@@ -58,6 +58,7 @@
                     </div>
 
                     <!-- Client/Status Info -->
+                    <!-- Client/Status Info -->
                     <div class="p-8 bg-slate-50/50">
                         <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                             <div class="flex items-center gap-4">
@@ -71,27 +72,123 @@
                                     <p class="text-[10px] text-slate-500 font-medium uppercase tracking-widest mt-0.5">Contact: +255 739 123 455</p>
                                 </div>
                             </div>
+                            
+                            <!-- Status Badges -->
+                            <div class="flex flex-col gap-2 text-right">
+                                <span class="px-3 py-1 bg-slate-200 rounded-full text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                                    Status: {{ $request->status }}
+                                </span>
+                                @if($request->payment_status !== 'pending')
+                                    <span class="px-3 py-1 {{ $request->payment_status === 'released' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700' }} rounded-full text-[10px] font-bold uppercase tracking-widest">
+                                        Payment: {{ $request->payment_status }}
+                                    </span>
+                                @endif
+                            </div>
 
                             <div class="flex items-center gap-3 w-full md:w-auto">
-                                @if(Auth::user()->role === 'worker' && $request->status === 'pending')
-                                    <form action="{{ route('job-requests.update', $request) }}" method="POST" class="flex-grow md:flex-none">
-                                        @csrf @method('PATCH')
-                                        <input type="hidden" name="status" value="accepted">
-                                        <button type="submit" class="w-full btn-success !py-2.5 !px-6 text-[10px] uppercase tracking-widest ring-offset-2 hover:ring-2 ring-emerald-500/20">
-                                            Accept Job
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('job-requests.update', $request) }}" method="POST" class="flex-grow md:flex-none">
-                                        @csrf @method('PATCH')
-                                        <input type="hidden" name="status" value="rejected">
-                                        <button type="submit" class="w-full btn-danger !py-2.5 !px-6 text-[10px] uppercase tracking-widest ring-offset-2 hover:ring-2 ring-rose-500/20">
-                                            Decline
-                                        </button>
-                                    </form>
-                                @else
-                                    <div class="px-6 py-2.5 bg-slate-200 text-slate-600 rounded-xl text-[10px] font-bold uppercase tracking-widest">
-                                        Status: {{ $request->status }}
-                                    </div>
+                                
+                                {{-- WORKER ACTIONS --}}
+                                @if(Auth::user()->role === 'worker')
+                                    @if($request->status === 'pending')
+                                        <div class="flex gap-2">
+                                            <form action="{{ route('job-requests.update', $request) }}" method="POST">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="action" value="quote">
+                                                <div class="flex items-center gap-2">
+                                                    <input type="number" name="agreed_price" placeholder="Your Price (TZS)" required class="text-xs rounded-lg border-slate-300 w-32 focus:border-blue-500 focus:ring-blue-500">
+                                                    <button type="submit" class="btn-primary !py-2.5 !px-4 text-[10px] uppercase tracking-widest">
+                                                        Accept & Quote
+                                                    </button>
+                                                </div>
+                                            </form>
+                                            <form action="{{ route('job-requests.update', $request) }}" method="POST">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="rejected">
+                                                <button type="submit" class="p-2.5 bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @elseif($request->status === 'accepted' && $request->payment_status === 'in_escrow' && $request->work_status === 'pending')
+                                        <form action="{{ route('job-requests.update', $request) }}" method="POST">
+                                            @csrf @method('PATCH')
+                                            <input type="hidden" name="action" value="start_work">
+                                            <button type="submit" class="btn-primary !py-2.5 !px-6 text-[10px] uppercase tracking-widest">
+                                                Start Work
+                                            </button>
+                                        </form>
+                                    @elseif($request->work_status === 'in_progress')
+                                        <form action="{{ route('job-requests.update', $request) }}" method="POST">
+                                            @csrf @method('PATCH')
+                                            <input type="hidden" name="action" value="finish_work">
+                                            <button type="submit" class="btn-success !py-2.5 !px-6 text-[10px] uppercase tracking-widest">
+                                                Mark Complete
+                                            </button>
+                                        </form>
+                                    @endif
+                                @endif
+
+                                {{-- CLIENT ACTIONS --}}
+                                @if(Auth::user()->role === 'customer')
+                                    @if($request->status === 'accepted' && $request->payment_status === 'pending')
+                                        <div class="text-right">
+                                            <p class="text-xs font-bold text-slate-500 mb-1">Quote: TZS {{ number_format($request->agreed_price) }}</p>
+                                            <form action="{{ route('job-requests.update', $request) }}" method="POST">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="action" value="pay">
+                                                <button type="submit" class="btn-primary !py-2.5 !px-6 text-[10px] uppercase tracking-widest">
+                                                    Deposit to Escrow
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @elseif($request->work_status === 'completed' && $request->payment_status === 'in_escrow')
+                                        <form action="{{ route('job-requests.update', $request) }}" method="POST">
+                                            @csrf @method('PATCH')
+                                            <input type="hidden" name="action" value="confirm_work">
+                                            <button type="submit" class="btn-success !py-2.5 !px-6 text-[10px] uppercase tracking-widest">
+                                                Confirm & Release Funds
+                                            </button>
+                                        </form>
+                                    @elseif($request->status === 'completed' && $request->payment_status === 'released')
+                                        @if(!$request->review)
+                                            <button onclick="document.getElementById('review-modal-{{ $request->id }}').showModal()" class="btn-primary !py-2.5 !px-6 text-[10px] uppercase tracking-widest">
+                                                Leave Review
+                                            </button>
+                                            
+                                            <dialog id="review-modal-{{ $request->id }}" class="modal p-0 rounded-2xl backdrop:bg-slate-900/50 open:animate-fade-in backdrop:animate-fade-in">
+                                                <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+                                                    <button onclick="document.getElementById('review-modal-{{ $request->id }}').close()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                    </button>
+                                                    
+                                                    <h3 class="text-xl font-bold text-slate-900 mb-2">Rate Your Experience</h3>
+                                                    <p class="text-slate-500 text-sm mb-6">How was working with {{ $request->worker->name }}?</p>
+                                                    
+                                                    <form action="{{ route('reviews.store', $request->worker->workerProfile) }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="job_request_id" value="{{ $request->id }}">
+                                                        
+                                                        <div class="flex justify-center gap-2 mb-6" x-data="{ rating: 0 }">
+                                                            <input type="hidden" name="rating" x-model="rating" required>
+                                                            @foreach(range(1, 5) as $star)
+                                                                <button type="button" @click="rating = {{ $star }}" class="text-3xl transition-colors focus:outline-none" :class="rating >= {{ $star }} ? 'text-amber-400' : 'text-slate-200'">
+                                                                    ★
+                                                                </button>
+                                                            @endforeach
+                                                        </div>
+                                                        
+                                                        <textarea name="comment" rows="3" placeholder="Share your feedback..." required class="w-full rounded-xl border-slate-200 text-sm focus:border-blue-500 focus:ring-blue-500 mb-6"></textarea>
+                                                        
+                                                        <button type="submit" class="btn-primary w-full py-3">Submit Review</button>
+                                                    </form>
+                                                </div>
+                                            </dialog>
+                                        @else
+                                            <span class="text-xs font-bold text-slate-400 flex items-center gap-1">
+                                                <span class="text-amber-400">★</span> {{ $request->review->rating }}.0 Reviewed
+                                            </span>
+                                        @endif
+                                    @endif
                                 @endif
                                 
                                 <a href="{{ route('messages.show', Auth::user()->role === 'worker' ? $request->client_id : $request->worker_id) }}" 

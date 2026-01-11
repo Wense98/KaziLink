@@ -33,7 +33,10 @@ class WorkerSeeder extends Seeder
             WorkerProfile::create([
                 'user_id' => $user->id,
                 'service_category_id' => $categories->random()->id,
-                'location_id' => $regions->random()->id,
+                'location_id' => $regions->isNotEmpty() ? $regions->random()->id : null,
+                'district' => 'Kinondoni', // Default for seed
+                'ward' => 'Sinza', // Default for seed
+                'street' => 'Mori', // Default for seed
                 'bio' => "Experienced professional ready to help with your needs. Specialized in quality service and timely delivery.",
                 'experience_years' => rand(1, 15),
                 'hourly_rate' => rand(5000, 50000),

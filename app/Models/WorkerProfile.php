@@ -56,4 +56,27 @@ class WorkerProfile extends Model
     {
         return $this->user->reviewsReceived()->count();
     }
+
+    /**
+     * Scope a query to only include verified and active workers.
+     */
+    public function scopeVerifiedAndActive($query)
+    {
+        return $query->where('is_verified', true)
+                     ->whereHas('user.subscriptions', function ($q) {
+                         $q->where('status', 'active')
+                           ->where('ends_at', '>', now());
+                     });
+    }
+
+    /**
+     * Check if the worker has an active subscription.
+     */
+    public function hasActiveSubscription(): bool
+    {
+        return $this->user->subscriptions()
+                    ->where('status', 'active')
+                    ->where('ends_at', '>', now())
+                    ->exists();
+    }
 }

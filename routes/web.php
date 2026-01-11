@@ -21,7 +21,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
     Route::get('/subscriptions/checkout', [SubscriptionController::class, 'checkout'])->name('subscriptions.checkout');
-    Route::post('/subscriptions/process', [SubscriptionController::class, 'process'])->name('subscriptions.process');
+    Route::get('/subscriptions/checkout', [SubscriptionController::class, 'checkout'])->name('subscriptions.checkout');
+    Route::post('/subscriptions/process', [SubscriptionController::class, 'store'])->name('subscriptions.store');
+    Route::get('/subscriptions/callback', [SubscriptionController::class, 'callback'])->name('subscriptions.callback');
+
+    // Worker Verification
+    Route::get('/worker/verification', [\App\Http\Controllers\WorkerVerificationController::class, 'show'])->name('worker.verification.show');
+    Route::post('/worker/verification', [\App\Http\Controllers\WorkerVerificationController::class, 'store'])->name('worker.verification.store');
 
     Route::post('/worker/{worker}/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 
@@ -58,6 +64,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/job-requests', [App\Http\Controllers\JobRequestController::class, 'index'])->name('job-requests.index');
     Route::post('/job-requests/{user}', [App\Http\Controllers\JobRequestController::class, 'store'])->name('job-requests.store');
     Route::patch('/job-requests/{jobRequest}', [App\Http\Controllers\JobRequestController::class, 'update'])->name('job-requests.update');
+    Route::get('/job-requests/callback', [App\Http\Controllers\JobRequestController::class, 'callback'])->name('job-requests.callback');
+    
+    // Reviews
+    Route::post('/reviews/{worker}', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/verify-otp', [\App\Http\Controllers\OtpVerificationController::class, 'show'])->name('verification.notice');
+    Route::post('/verify-otp', [\App\Http\Controllers\OtpVerificationController::class, 'verify'])->name('verification.verify');
+    Route::post('/verify-otp/resend', [\App\Http\Controllers\OtpVerificationController::class, 'resend'])->name('verification.resend');
 });
 
 Route::get('/search', [\App\Http\Controllers\WorkerSearchController::class, 'index'])->name('search.index');

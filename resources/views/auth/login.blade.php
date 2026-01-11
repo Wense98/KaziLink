@@ -60,6 +60,7 @@
                             <input id="email" name="email" type="text" autocomplete="email" required
                                 class="form-input-premium"
                                 placeholder="name@example.com or 07XXXXXXXX">
+                            <x-input-error :messages="$errors->get('email')" class="mt-2 text-xs font-bold text-red-500" />
                         </div>
 
                         <div>
@@ -70,6 +71,7 @@
                             <input id="password" name="password" type="password" autocomplete="current-password" required
                                 class="form-input-premium"
                                 placeholder="••••••••">
+                            <x-input-error :messages="$errors->get('password')" class="mt-2 text-xs font-bold text-red-500" />
                         </div>
                     </div>
 
@@ -110,6 +112,22 @@
                         Don't have an account? <a href="{{ route('register') }}" class="font-bold text-brand-600 hover:text-brand-500">Create one for free</a>
                     </p>
                 </form>
+
+                 <div class="mt-4">
+                     @if ($errors->any())
+                        <div class="mb-4">
+                            <div class="font-medium text-red-600">
+                                {{ __('Whoops! Something went wrong.') }}
+                            </div>
+
+                            <ul class="mt-3 list-disc list-inside text-sm text-red-600">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

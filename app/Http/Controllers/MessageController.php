@@ -63,13 +63,36 @@ class MessageController extends Controller
     public function store(Request $request, User $user)
     {
         $request->validate([
-            'body' => 'required|string|max:1000'
+            'body' => 'nullable|string|max:1000',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,mp3,wav,ogg|max:10240' // 10MB max
         ]);
+
+        if (!$request->body && !$request->hasFile('attachment')) {
+            return back()->withErrors(['body' => 'Message cannot be empty.']);
+        }
+
+        $path = null;
+        $type = 'text';
+
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $path = $file->store('attachments', 'public');
+            
+            // Simple type detection
+            $mime = $file->getMimeType();
+            if (str_contains($mime, 'image')) {
+                $type = 'image';
+            } elseif (str_contains($mime, 'audio')) {
+                $type = 'audio';
+            }
+        }
 
         Message::create([
             'sender_id' => Auth::id(),
             'receiver_id' => $user->id,
-            'body' => $request->body
+            'body' => $request->body,
+            'attachment_type' => $type,
+            'attachment_path' => $path
         ]);
 
         return back()->with('status', 'message-sent');

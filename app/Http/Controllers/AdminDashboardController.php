@@ -40,6 +40,12 @@ class AdminDashboardController extends Controller
             case 'workers':
                 $data['workers'] = WorkerProfile::with('user', 'category')->latest()->paginate(10);
                 break;
+            case 'verifications':
+                $data['workers'] = WorkerProfile::with('user', 'category')
+                                    ->where('status', 'pending')
+                                    ->latest()
+                                    ->paginate(15);
+                break;
             case 'users':
                 $data['users'] = User::latest()->paginate(10);
                 break;

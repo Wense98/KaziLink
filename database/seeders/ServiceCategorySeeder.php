@@ -27,9 +27,9 @@ class ServiceCategorySeeder extends Seeder
                 'description' => 'Furniture making, repair, and woodworks.',
             ],
             [
-                'name' => 'Cleaning',
+                'name' => 'Home Cleaning',
                 'icon' => 'sparkles',
-                'description' => 'Home and office cleaning services.',
+                'description' => 'Deep cleaning, laundry, and housekeeping services.',
             ],
             [
                 'name' => 'Gardening',
@@ -40,6 +40,36 @@ class ServiceCategorySeeder extends Seeder
                 'name' => 'Painting',
                 'icon' => 'paint-brush',
                 'description' => 'Interior and exterior painting services.',
+            ],
+            [
+                'name' => 'Tutoring',
+                'icon' => 'academic-cap',
+                'description' => 'Private home tuition for primary and secondary students.',
+            ],
+            [
+                'name' => 'Event Planning',
+                'icon' => 'musical-note',
+                'description' => 'Decor, MC services, DJ, and event coordination.',
+            ],
+            [
+                'name' => 'Catering & Cooking',
+                'icon' => 'cake',
+                'description' => 'Personal chefs, baking, and event catering.',
+            ],
+            [
+                'name' => 'Child & Elderly Care',
+                'icon' => 'heart',
+                'description' => 'Nannies, babysitters, and elderly caregivers.',
+            ],
+            [
+                'name' => 'Beauty & Salon',
+                'icon' => 'scissors',
+                'description' => 'Mobile makeup artists, hair braiding, and nails.',
+            ],
+            [
+                'name' => 'Transport & Moving',
+                'icon' => 'truck',
+                'description' => 'House moving, goods delivery, and bodaboda services.',
             ],
         ];
 

@@ -11,6 +11,8 @@ class Message extends Model
         'receiver_id',
         'body',
         'read_at',
+        'attachment_type',
+        'attachment_path',
     ];
 
     public function sender()

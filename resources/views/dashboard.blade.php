@@ -14,7 +14,7 @@
             <!-- Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <!-- Active Jobs -->
-                <div class="card-ui p-6 flex items-center bg-blue-50 border-blue-100">
+                <div class="card-ui p-6 flex items-center bg-blue-50 border-blue-100" data-aos="fade-up" data-aos-delay="100">
                     <div class="flex-grow">
                         <p class="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Active Jobs</p>
                         <h3 class="text-3xl font-bold text-blue-900">3</h3>
@@ -25,7 +25,7 @@
                 </div>
 
                 <!-- Total Earnings -->
-                <div class="card-ui p-6 flex items-center bg-white">
+                <div class="card-ui p-6 flex items-center bg-white" data-aos="fade-up" data-aos-delay="200">
                     <div class="flex-grow">
                         <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Total Earnings</p>
                         <h3 class="text-2xl font-bold text-slate-900">TZS 1,200,000</h3>

@@ -10,7 +10,7 @@
                 <p class="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">Choose how you want to maintain your presence on KaziLink. New workers start with a <span class="text-brand-600 dark:text-brand-400 font-bold">1-week free trial</span> automatically!</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-10 max-w-lg mx-auto">
                 @foreach($plans as $plan)
                 <div class="group relative bg-white dark:bg-slate-800 rounded-[3rem] shadow-sm border {{ $currentSubscription && $currentSubscription->plan_type == $plan['id'] ? 'border-brand-500 ring-4 ring-brand-50 dark:ring-brand-900/50' : 'border-slate-100 dark:border-slate-700 hover:border-brand-200 dark:hover:border-brand-500/50' }} overflow-hidden flex flex-col transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200 dark:hover:shadow-slate-900/50 hover:-translate-y-2">
                     
@@ -22,25 +22,25 @@
                         </div>
                     @endif
 
-                    <div class="p-10 flex-grow">
-                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white font-sans mb-6 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{{ $plan['name'] }}</h3>
+                    <div class="p-10 flex-grow text-center">
+                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white font-sans mb-4 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">{{ $plan['name'] }}</h3>
                         
-                        <div class="mb-10 flex items-baseline">
-                            <span class="text-3xl font-bold text-slate-900 dark:text-white font-sans">TZS {{ number_format($plan['price']) }}</span>
-                            <span class="ml-2 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-widest">/ {{ $plan['id'] === 'annual' ? 'Year' : 'Month' }}</span>
+                        <div class="mb-8 flex items-baseline justify-center">
+                            <span class="text-5xl font-bold text-slate-900 dark:text-white font-sans">TPS {{ number_format($plan['price']) }}</span>
+                            <span class="ml-2 text-slate-400 dark:text-slate-500 font-bold text-xs uppercase tracking-widest">/ Month</span>
                         </div>
 
-                        <p class="text-slate-500 dark:text-slate-400 mb-10 leading-relaxed">{{ $plan['description'] }}</p>
+                        <p class="text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">{{ $plan['description'] }}</p>
 
-                        <div class="space-y-6">
+                        <div class="space-y-4 text-left max-w-xs mx-auto">
                             @foreach($plan['features'] as $feature)
-                            <div class="flex items-start">
-                                <div class="w-6 h-6 rounded-full bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 shrink-0 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center text-brand-600 dark:text-brand-400 shrink-0">
                                     <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
-                                <span class="ml-4 text-sm font-semibold text-slate-700 dark:text-slate-300 leading-tight">{{ $feature }}</span>
+                                <span class="ml-4 text-sm font-semibold text-slate-700 dark:text-slate-300">{{ $feature }}</span>
                             </div>
                             @endforeach
                         </div>
@@ -49,11 +49,11 @@
                     <div class="p-10 bg-slate-50 dark:bg-slate-900/30 border-t border-slate-100 dark:border-slate-700">
                         @if($currentSubscription && $currentSubscription->plan_type == $plan['id'])
                             <button disabled class="w-full px-8 py-5 bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-2xl font-bold uppercase tracking-widest text-[10px] cursor-not-allowed">
-                                Current Subscription
+                                Subscription Active
                             </button>
                         @else
                             <a href="{{ route('subscriptions.checkout', ['plan' => $plan['id']]) }}" class="block w-full text-center px-8 py-5 bg-brand-600 text-white rounded-2xl font-bold uppercase tracking-widest text-[10px] hover:bg-brand-700 hover:shadow-xl hover:shadow-brand-500/30 transition-all duration-300">
-                                Select Plan & Start Growth
+                                Pay Subscription Now
                             </a>
                         @endif
                     </div>

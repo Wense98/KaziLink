@@ -104,7 +104,21 @@
                                     @endif
                                     <div class="max-w-[70%]">
                                         <div class="p-4 {{ $message->sender_id === Auth::id() ? 'bg-blue-600 text-white rounded-2xl rounded-tr-none' : 'bg-white text-slate-800 rounded-2xl rounded-tl-none border border-slate-100 shadow-sm' }}">
-                                            <p class="text-sm leading-relaxed">{{ $message->body }}</p>
+                                            @if($message->attachment_type === 'image')
+                                                <img src="{{ asset('storage/' . $message->attachment_path) }}" class="rounded-lg mb-2 max-w-full h-auto" alt="Attachment">
+                                            @elseif($message->attachment_type === 'audio')
+                                                <div class="flex items-center gap-2 mb-2 bg-black/10 p-2 rounded-lg">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                                                    <audio controls class="h-8 w-48 max-w-full">
+                                                        <source src="{{ asset('storage/' . $message->attachment_path) }}" type="audio/mpeg">
+                                                        Your browser does not support the audio element.
+                                                    </audio>
+                                                </div>
+                                            @endif
+                                            
+                                            @if($message->body)
+                                                <p class="text-sm leading-relaxed">{{ $message->body }}</p>
+                                            @endif
                                         </div>
                                         <p class="text-[10px] text-slate-400 mt-1 {{ $message->sender_id === Auth::id() ? 'text-right' : 'text-left' }}">
                                             {{ $message->created_at->format('g:i A') }}
@@ -119,13 +133,18 @@
 
                         <!-- Input Area -->
                         <div class="p-6 bg-white border-t border-slate-200">
-                            <form action="{{ route('messages.store', $activeContact) }}" method="POST" class="flex gap-4">
+                            <form action="{{ route('messages.store', $activeContact) }}" method="POST" enctype="multipart/form-data" class="flex gap-4 items-end">
                                 @csrf
-                                <div class="flex-grow relative">
-                                    <input type="text" name="body" placeholder="Type a message..." required
-                                           class="w-full bg-slate-100 border-none rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all">
+                                <div class="flex-grow relative bg-slate-100 rounded-2xl flex items-center pr-2">
+                                    <input type="text" name="body" placeholder="Type a message..." 
+                                           class="flex-grow bg-transparent border-none px-6 py-4 text-sm focus:ring-0 focus:border-none">
+                                    
+                                    <label class="p-2 text-slate-400 hover:text-blue-600 cursor-pointer transition-colors block" title="Attach Image or Audio">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                                        <input type="file" name="attachment" class="hidden" accept="image/*,audio/*">
+                                    </label>
                                 </div>
-                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-2xl shadow-lg shadow-blue-600/20 transition-all flex-shrink-0">
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-2xl shadow-lg shadow-blue-600/20 transition-all flex-shrink-0 mb-px">
                                     <svg class="w-6 h-6 rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                                 </button>
                             </form>
