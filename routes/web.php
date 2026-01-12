@@ -72,8 +72,8 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/verify-otp', [\App\Http\Controllers\OtpVerificationController::class, 'show'])->name('verification.notice');
-    Route::post('/verify-otp', [\App\Http\Controllers\OtpVerificationController::class, 'verify'])->name('verification.verify');
-    Route::post('/verify-otp/resend', [\App\Http\Controllers\OtpVerificationController::class, 'resend'])->name('verification.resend');
+    Route::post('/verify-otp', [\App\Http\Controllers\OtpVerificationController::class, 'verify'])->name('otp.verify');
+    Route::post('/verify-otp/resend', [\App\Http\Controllers\OtpVerificationController::class, 'resend'])->name('otp.resend');
 });
 
 Route::get('/search', [\App\Http\Controllers\WorkerSearchController::class, 'index'])->name('search.index');

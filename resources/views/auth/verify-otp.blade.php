@@ -42,7 +42,7 @@
                 @endif
 
                 <div class="space-y-6">
-                    <form method="POST" action="{{ route('verification.verify') }}">
+                    <form method="POST" action="{{ route('otp.verify') }}">
                         @csrf
                         
                         <div class="mb-8">
@@ -70,7 +70,7 @@
                         </div>
                     </div>
 
-                    <form method="POST" action="{{ route('verification.resend') }}">
+                    <form method="POST" action="{{ route('otp.resend') }}">
                         @csrf
                         <button type="submit" class="w-full flex justify-center py-4 px-4 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all border border-slate-100 hover:border-slate-200">
                             {{ __('Didn\'t receive code? Resend Now') }}
