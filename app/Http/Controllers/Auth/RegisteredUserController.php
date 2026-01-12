@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -56,8 +57,17 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
         
-        // Flash OTP for simulation purposes
-        session()->flash('success', "Welcome! Your OTP is: $otp (Simulation)");
+        // Send OTP via Email
+        try {
+            Mail::raw("Your KaziLink verification code is: $otp", function ($message) use ($user) {
+                $message->to($user->email)
+                        ->subject('Verify your KaziLink Account');
+            });
+            session()->flash('success', "A 4-digit verification code has been sent to your email.");
+        } catch (\Exception $e) {
+            // Log error or fallback
+            session()->flash('success', "Welcome! (Simulation) Your code is: $otp");
+        }
 
         return redirect(route('verification.notice'));
     }
