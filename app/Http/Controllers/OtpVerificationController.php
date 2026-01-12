@@ -30,7 +30,8 @@ class OtpVerificationController extends Controller
 
         if ($request->otp_code == $user->otp_code) {
             $user->phone_verified_at = now();
-            $user->otp_code = null; // Clear OTP after successful verification
+            $user->email_verified_at = now(); // Mark email verified to satisfy middleware
+            $user->otp_code = null; 
             $user->save();
 
             return redirect()->route('dashboard')->with('status', 'Phone number verified successfully!');
