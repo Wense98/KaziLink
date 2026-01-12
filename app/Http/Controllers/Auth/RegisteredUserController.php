@@ -7,9 +7,9 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Services\SmsService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -57,13 +57,13 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
         
-        // Send OTP via Email
+        // Send OTP via SMS
         try {
-            Mail::raw("Your KaziLink verification code is: $otp", function ($message) use ($user) {
-                $message->to($user->email)
-                        ->subject('Verify your KaziLink Account');
-            });
-            session()->flash('success', "A 4-digit verification code has been sent to your email.");
+            $smsService = new SmsService();
+            $message = "Your KaziLink verification code is: $otp";
+            $smsService->sendSms($user->phone, $message);
+            
+            session()->flash('success', "A 4-digit verification code has been sent to your phone number ($user->phone).");
         } catch (\Exception $e) {
             // Log error or fallback
             session()->flash('success', "Welcome! (Simulation) Your code is: $otp");

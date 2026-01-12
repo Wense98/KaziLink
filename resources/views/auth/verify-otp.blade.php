@@ -26,7 +26,7 @@
                     
                     <h2 class="text-3xl font-display font-bold text-slate-900 tracking-tight">Security Code</h2>
                     <p class="mt-3 text-slate-500 text-lg leading-relaxed px-2">
-                        {{ __('We\'ve sent a 4-digit verification code to your email. Please enter it below to securely activate your account.') }}
+                        {{ __('We\'ve sent a 4-digit verification code to your phone number. Please enter it below to securely activate your account.') }}
                     </p>
                 </div>
 

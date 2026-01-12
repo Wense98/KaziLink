@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Services\SmsService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class OtpVerificationController extends Controller
 {
@@ -51,11 +51,11 @@ class OtpVerificationController extends Controller
         $user->save();
 
         try {
-            Mail::raw("Your new KaziLink verification code is: $code", function ($message) use ($user) {
-                $message->to($user->email)
-                        ->subject('New Verification Code - KaziLink');
-            });
-            session()->flash('success', "A new 4-digit code has been sent to your email.");
+            $smsService = new SmsService();
+            $message = "Your new KaziLink verification code is: $code";
+            $smsService->sendSms($user->phone, $message);
+            
+            session()->flash('success', "A new 4-digit code has been sent to your phone number ($user->phone).");
         } catch (\Exception $e) {
             session()->flash('success', "New code sent! (Simulation: Your code is $code)");
         }

@@ -41,4 +41,10 @@ return [
         'encryption_key' => env('FLUTTERWAVE_ENCRYPTION_KEY'),
     ],
 
+    'beem' => [
+        'api_key' => env('BEEM_API_KEY'),
+        'secret_key' => env('BEEM_SECRET_KEY'),
+        'source_name' => env('BEEM_SOURCE_NAME', 'KaziLink'),
+    ],
+
 ];
